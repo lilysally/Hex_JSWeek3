@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <select name="" id="" class="form-control" v-model="selectItem">
+        <option :value="item" v-for="item in product.option.food">
+          <a href="#" style="color: white;"> {{ item }}</a>
+        </option>
+      </select>
+      <button type="button" @click="add">增加</button>
+    </div>
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script>
+  <script>
+    let app = new Vue({
+      el: "#app",
+      data: {
+        selectItem: "",
+        product: {
+          option: {
+            food: ["小飯桶", "小飯桶1", "小飯桶2"]
+          }
+        }
+      },
+      methods: {
+        add() {
+          console.log(this.product.option.food);
+        }
+      }
+    });
+  </script>
+</html>

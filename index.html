@@ -15,16 +15,88 @@
   <body>
     <div id="app" class="container mt-3">
       <div>
-        <div class="text-right mt-4">
-          <button class="btn btn-primary" @click="openModal('add')">
-            建立新的產品
+        <nav
+          class="navbar navbar-expand-lg navbar-light row"
+          style="background: lightgreen;"
+        >
+          <a class="navbar-brand" href="#">Vue後臺管理</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
           </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  >產品列表 <span class="sr-only">(current)</span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#">食物</a>
+                  <a class="dropdown-item" href="#">清潔</a>
+                </div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " href="#">
+                  優惠劵
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">訂單列表</a>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+              <input
+                class="form-control mr-sm-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+              />
+              <button
+                class="btn btn-outline-success my-2 my-sm-0"
+                type="submit"
+              >
+                Search
+              </button>
+            </form>
+          </div>
+        </nav>
+        <div class="row mt-4">
+          <div class="text-left col-md-4">
+            <select name="" id="" class="form-control" v-model="selected1">
+              <option :value="item" v-for="item in selectData">
+                <a href="#" style="color: white;"> {{ item }}</a>
+              </option>
+            </select>
+          </div>
+          <div class="text-right col-md-8">
+            <button class="btn btn-primary" @click="openModal('add')">
+              建立新的產品
+            </button>
+          </div>
         </div>
         <table class="table mt-4">
           <thead>
             <tr>
               <th width="120">
                 分類
+              </th>
+              <th width="120">
+                子項
               </th>
               <th>產品名稱</th>
               <th width="120">
@@ -44,6 +116,13 @@
           <tbody>
             <tr v-for="(item) in products" :key="item.id">
               <td>{{ item.category }}</td>
+              <td>
+                <select name="" id="" class="form-control" v-model="selectItem">
+                  <option :value="value" v-for="value in products.option">
+                    {{value}}
+                  </option>
+                </select>
+              </td>
               <td>{{ item.title }}</td>
               <td class="text-right">
                 {{ item.origin_price }}
@@ -65,7 +144,7 @@
                   </button>
                   <button
                     class="btn btn-outline-danger btn-sm"
-                    @click="deleteItem(item)"
+                    @click="openModal('delete',item)"
                   >
                     刪除
                   </button>
@@ -137,6 +216,24 @@
                         />
                       </div>
                       <div class="form-group col-md-6">
+                        <label for="price">子項</label>
+                        <select
+                          name=""
+                          id=""
+                          class="form-control"
+                          v-model="selectItemTemp"
+                        >
+                          <option
+                            :value="value"
+                            v-for="value in products.option"
+                          >
+                            {{value}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-12">
                         <label for="price">單位</label>
                         <input
                           id="unit"
@@ -147,7 +244,6 @@
                         />
                       </div>
                     </div>
-
                     <div class="form-row">
                       <div class="form-group col-md-6">
                         <label for="origin_price">原價</label>
@@ -263,11 +359,7 @@
                 >
                   取消
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-danger"
-                  @click="deleteDo()"
-                >
+                <button type="button" class="btn btn-danger" @click="done()">
                   確認刪除
                 </button>
               </div>
@@ -300,34 +392,30 @@
     let app = new Vue({
       el: "#app",
       data: {
+        selectData: ["食物", "清潔"],
+        selected1: "",
         products: [
-          {
-            id: 1586934917210,
-            unit: "台",
-            category: "掌上主機",
-            title: "Switch",
-            origin_price: 20000,
-            price: 9980,
-            description: "想玩就玩",
-            content: "動森太好玩惹",
-            is_enabled: 1,
-            imageUrl:
-              "https://images.unsplash.com/photo-1592107761705-30a1bbc641e7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80"
-          },
           {
             id: 1196934917910,
             unit: "台",
-            category: "主機",
-            title: "PS5 Wifi",
-            origin_price: 29999,
-            description: "次世代超強規格",
-            content: "我也想要換一台 PS5 Wifi",
-            price: 9487,
+            category: "主食",
+            title: "輕寵食小飯桶(54入)",
+            origin_price: 15001,
+            description: "小飯桶方案，有榖無榖6種口味皆可混搭",
+            content: "MIX主食全系列口味任選54袋(有榖無榖可混搭)",
+            price: 14251,
             is_enabled: 0,
             imageUrl:
-              "https://images.unsplash.com/photo-1592107761705-30a1bbc641e7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80"
+              "https://shoplineimg.com/5e15af144cfed1000aa3ba30/5e70428f73d03f0a8089e897/400x.webp?source_format=jpg",
+            option: {
+              food1: "小飯桶",
+              food2: "輕寵食無穀",
+              food3: "輕寵有無穀"
+            }
           }
         ],
+        selectItem: "",
+        selectItemTemp: "",
         tempProduct: {},
         action: "", //動作
         status: "" //哪個產品項目
@@ -335,50 +423,57 @@
       methods: {
         //productModal共用新增，編輯的視窗
         openModal(hint, item) {
-          $("#productModal").modal("show");
-          // 新增
-          if (hint === "add") {
-            this.action = "add";
-          }
-          // 編輯
-          if (hint === "edit") {
-            this.action = "edit";
-            this.products.forEach((list, key) => {
-              if (list.id == item.id) {
-                this.status = key;
-              }
-            });
-            this.tempProduct = this.products[this.status];
+          switch (hint) {
+            // 新增
+            case "add":
+              $("#productModal").modal("show");
+              this.tempProduct = {};
+              //this.$set(this.tempProduct.option, food, this.tempProduct.option);
+              this.action = "add";
+              break;
+            // 編輯
+            case "edit":
+              $("#productModal").modal("show");
+              this.action = "edit";
+              this.products.forEach((list, key) => {
+                if (list.id == item.id) {
+                  this.status = key;
+                }
+              });
+              this.tempProduct = this.products[this.status];
+              break;
+            //刪除
+            //delProductModal為刪除視窗
+            case "delete":
+              this.action = "delete";
+              this.tempProduct = Object.assign({}, item);
+              $("#delProductModal").modal("show");
+              this.products.forEach((list, key) => {
+                if (list.id == item.id) {
+                  this.status = key;
+                }
+              });
+              break;
           }
         },
         //productModal的確定鈕
         done() {
           // 新增
           if (this.action === "add") {
+            this.tempProduct.id = new Date().getTime();
             this.products.push(this.tempProduct);
-            this.tempProduct = {};
-            console.log(this.tempProduct);
+            $("#productModal").modal("hide");
           }
           // 編輯
           if (this.action === "edit") {
-            this.tempProduct = {};
+            this.tempProduct = this.products[this.status];
+            $("#productModal").modal("hide");
           }
-
-          $("#productModal").modal("hide");
-        },
-        //delProductModal為刪除視窗
-        deleteItem(item) {
-          $("#delProductModal").modal("show");
-          this.products.forEach((list, key) => {
-            if (list.id == item.id) {
-              this.status = key;
-            }
-          });
-        },
-        //確認刪除按鈕
-        deleteDo() {
-          this.products.splice(this.status, 1);
-          $("#delProductModal").modal("hide");
+          // delProductModal的確認刪除
+          if (this.action === "delete") {
+            this.products.splice(this.status, 1);
+            $("#delProductModal").modal("hide");
+          }
         }
       }
     });
